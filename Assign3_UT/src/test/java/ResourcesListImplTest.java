@@ -1,35 +1,14 @@
 package test.java;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
-import java.io.File;
-import java.io.IOException;
 import java.util.Vector;
-
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
-
 import main.java.memoranda.CurrentProject;
-import main.java.memoranda.Project;
-import main.java.memoranda.ProjectImpl;
-import main.java.memoranda.ProjectManager;
 import main.java.memoranda.Resource;
 import main.java.memoranda.ResourcesList;
 import main.java.memoranda.ResourcesListImpl;
-import main.java.memoranda.util.FileStorage;
-import nu.xom.Attribute;
-import nu.xom.Builder;
-import nu.xom.Comment;
-import nu.xom.DocType;
 import nu.xom.Document;
 import nu.xom.Element;
-import nu.xom.Elements;
-import nu.xom.Node;
-import nu.xom.ParsingException;
-import nu.xom.ProcessingInstruction;
-import nu.xom.Text;
 
 public class ResourcesListImplTest {
 	
