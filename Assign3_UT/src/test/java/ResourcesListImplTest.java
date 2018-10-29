@@ -171,6 +171,13 @@ public class ResourcesListImplTest {
     	System.out.println("\nData added.\n");
     	doc = prjResources.getXMLContent();
     	System.out.println(doc.toXML());
+    	
+    	prjResources.removeResource("Java");
+    	prjResources.removeResource("Jacoco");
+    	
+    	System.out.println("\nData removed.\n");
+    	doc = prjResources.getXMLContent();
+    	System.out.println(doc.toXML());
 	}
 
 }
