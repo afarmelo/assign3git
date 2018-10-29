@@ -158,5 +158,19 @@ public class ResourcesListImplTest {
 		// test get a resource that doesn't exist
 		assertEquals(null, noDoc.getResource("NULL"));
 	}
+	
+	@Test
+	public void testXML() {
+    	prjResources = CurrentProject.getResourcesList();
+    	doc = prjResources.getXMLContent();
+    	System.out.println(doc.toXML());
+    	
+    	prjResources.addResource("Java", false, true);
+    	prjResources.addResource("Jacoco");
+    	
+    	System.out.println("\nData added.\n");
+    	doc = prjResources.getXMLContent();
+    	System.out.println(doc.toXML());
+	}
 
 }
