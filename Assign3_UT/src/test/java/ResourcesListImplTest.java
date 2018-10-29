@@ -1,9 +1,11 @@
 package test.java;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Vector;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -13,6 +15,7 @@ import main.java.memoranda.CurrentProject;
 import main.java.memoranda.Project;
 import main.java.memoranda.ProjectImpl;
 import main.java.memoranda.ProjectManager;
+import main.java.memoranda.Resource;
 import main.java.memoranda.ResourcesList;
 import main.java.memoranda.ResourcesListImpl;
 import main.java.memoranda.util.FileStorage;
@@ -31,80 +34,89 @@ import nu.xom.Text;
 public class ResourcesListImplTest {
 	
     ResourcesList prjResources;
+    ResourcesList noDoc;
     Document doc;
     Element root;
     
     @Before
     public void __init() {
-    	prjResources = CurrentProject.getResourcesList();
-    	doc = prjResources.getXMLContent();
-    	root = doc.getRootElement();
-    	printElements(root);
+
     }
     
-	public void printElements(Node curr) {
-//		String data = "";
-//		Node current = doc;
-//		if (current instanceof Element) {
-//			Element temp = (Element) current;
-//			data = ": " + temp.getQualifiedName();
-//		}
-//	    else if (current instanceof ProcessingInstruction) {
-//	        ProcessingInstruction temp = (ProcessingInstruction) current;
-//	        data = ": " + temp.getTarget();   
-//	    }
-//	    else if (current instanceof DocType) {
-//	        DocType temp = (DocType) current;
-//	        data = ": " + temp.getRootElementName();   
-//	    }
-//	    else if (current instanceof Text || current instanceof Comment) {
-//	        String value = current.getValue();
-//	        value = value.replace('\n', ' ').trim();
-//	        if (value.length() <= 20) data = ": " + value;
-//	        else data = ": " + current.getValue().substring(0, 17) + "...";   
-//	    }
-//		System.out.println(current.getClass().getName() + data);
+    /**
+     * This method will use the first constructor which is called using
+     * CurrentProject.getResourcesList(). It runs the resourcesList
+     * through scenarios where resources are added, retrieved, and removed.
+     * 
+     * Conditional checking has given rise to the basis of four test
+     * adds, gets, and removes. For the compound conditional in the creation
+     * of resources in the addResource method, it takes four calls to 
+     * go through all possible combinations of conditions.
+     * 
+     */
+	@Test
+	public void testPrjResources() {
+    	prjResources = CurrentProject.getResourcesList();
+    	
+		// test add resources
+		prjResources.addResource("Java");
+		prjResources.addResource("XML", false, true);
+		prjResources.addResource("Gradle", true, false);
+		prjResources.addResource("Jacoco", true, true);
 		
-		Element temp = (Element) curr;
-		Elements children = temp.getChildElements();
-		System.out.print("Element: " + temp.getQualifiedName());
-		System.out.print(" has " + temp.getChildElements().size());
-		System.out.println(" children.");
+		// test get resources
+		Resource java = prjResources.getResource("Java");		
+		assertEquals(false, java.isInetShortcut());
+		assertEquals(false, java.isProjectFile());
+
+		Resource xml = prjResources.getResource("XML");		
+		assertEquals(false, xml.isInetShortcut());
+		assertEquals(true, xml.isProjectFile());
 		
-		for (int i = 0; i < children.size(); i++) {
-			Element child = children.get(i);
-			int childAttr = child.getAttributeCount();
-			Elements grandChildren = child.getChildElements();
-			int grandChildrenNum = grandChildren.size();
-			
-			System.out.print("Child: " + child.getQualifiedName());
-			System.out.print(" has " + childAttr);
-			System.out.print(" attributes and " + grandChildrenNum);
-			System.out.println(" children.");
-			
-			System.out.println("Child: " + child.getQualifiedName());
-			
-			if (childAttr > 0) {
-				for(int j = 0; j < childAttr; j++) {
-					Attribute attribute = child.getAttribute(j);
-					String att = attribute.getValue();
-					System.out.println(att);
-					System.out.println(attribute.getQualifiedName());
-				}
-			}
-			
-			if (grandChildrenNum > 0) {
-				for (int k = 0; k < grandChildrenNum; k++) {
-					Element grandChild = grandChildren.get(i);
-					System.out.println("Grandchild: " + grandChild.getQualifiedName());
-				}
-			}
-		}
+		Resource gradle = prjResources.getResource("Gradle");		
+		assertEquals(true, gradle.isInetShortcut());
+		assertEquals(false, gradle.isProjectFile());
+		
+		Resource jacoco = prjResources.getResource("Jacoco");		
+		assertEquals(true, jacoco.isInetShortcut());
+		assertEquals(true, jacoco.isProjectFile());
+		
+		// test get all resources
+		Vector resources = prjResources.getAllResources();
+		assertEquals(4, resources.size());
+		
+		java = (Resource) resources.get(0);
+		assertEquals(false, java.isInetShortcut());
+		assertEquals(false, java.isProjectFile());
+		
+		xml = (Resource) resources.get(1);	
+		assertEquals(false, xml.isInetShortcut());
+		assertEquals(true, xml.isProjectFile());
+		
+		gradle = (Resource) resources.get(2);		
+		assertEquals(true, gradle.isInetShortcut());
+		assertEquals(false, gradle.isProjectFile());
+		
+		jacoco = (Resource) resources.get(3);		
+		assertEquals(true, jacoco.isInetShortcut());
+		assertEquals(true, jacoco.isProjectFile());
+		
+		// test get all resources count
+		assertEquals(4, prjResources.getAllResourcesCount());
+		
+		// test remove resources
+		prjResources.removeResource("Java");
+		prjResources.removeResource("XML");
+		prjResources.removeResource("Gradle");
+		prjResources.removeResource("Jacoco");
+		
+		// test get a resource that doesn't exist
+		assertEquals(null, prjResources.getResource("NULL"));
 	}
 	
 	@Test
-	public void test() {
-		System.out.println("Tests ran successfully");
+	public void testNoDoc() {
+    	noDoc = new ResourcesListImpl(CurrentProject.get());
 	}
 
 }
