@@ -38,11 +38,6 @@ public class ResourcesListImplTest {
     Document doc;
     Element root;
     
-    @Before
-    public void __init() {
-
-    }
-    
     /**
      * This method will use the first constructor which is called using
      * CurrentProject.getResourcesList(). It runs the resourcesList
@@ -110,13 +105,79 @@ public class ResourcesListImplTest {
 		prjResources.removeResource("Gradle");
 		prjResources.removeResource("Jacoco");
 		
+		// make sure all elements are removed
+		assertEquals(0, prjResources.getAllResourcesCount());
+		
 		// test get a resource that doesn't exist
 		assertEquals(null, prjResources.getResource("NULL"));
 	}
 	
+    /**
+     * This method will use the second constructor which requires a project.
+     * The project is found using CurrentProject.get(). The functionality is 
+     * similar to the previous test method
+     */
 	@Test
 	public void testNoDoc() {
     	noDoc = new ResourcesListImpl(CurrentProject.get());
+    	
+		// test add resources
+		noDoc.addResource("Java");
+		noDoc.addResource("XML", false, true);
+		noDoc.addResource("Gradle", true, false);
+		noDoc.addResource("Jacoco", true, true);
+		
+		// test get resources
+		Resource java = noDoc.getResource("Java");		
+		assertEquals(false, java.isInetShortcut());
+		assertEquals(false, java.isProjectFile());
+
+		Resource xml = noDoc.getResource("XML");		
+		assertEquals(false, xml.isInetShortcut());
+		assertEquals(true, xml.isProjectFile());
+		
+		Resource gradle = noDoc.getResource("Gradle");		
+		assertEquals(true, gradle.isInetShortcut());
+		assertEquals(false, gradle.isProjectFile());
+		
+		Resource jacoco = noDoc.getResource("Jacoco");		
+		assertEquals(true, jacoco.isInetShortcut());
+		assertEquals(true, jacoco.isProjectFile());
+		
+		// test get all resources
+		Vector resources = noDoc.getAllResources();
+		assertEquals(4, resources.size());
+		
+		java = (Resource) resources.get(0);
+		assertEquals(false, java.isInetShortcut());
+		assertEquals(false, java.isProjectFile());
+		
+		xml = (Resource) resources.get(1);	
+		assertEquals(false, xml.isInetShortcut());
+		assertEquals(true, xml.isProjectFile());
+		
+		gradle = (Resource) resources.get(2);		
+		assertEquals(true, gradle.isInetShortcut());
+		assertEquals(false, gradle.isProjectFile());
+		
+		jacoco = (Resource) resources.get(3);		
+		assertEquals(true, jacoco.isInetShortcut());
+		assertEquals(true, jacoco.isProjectFile());
+		
+		// test get all resources count
+		assertEquals(4, noDoc.getAllResourcesCount());
+		
+		// test remove resources
+		noDoc.removeResource("Java");
+		noDoc.removeResource("XML");
+		noDoc.removeResource("Gradle");
+		noDoc.removeResource("Jacoco");
+		
+		// make sure all elements are removed
+		assertEquals(0, noDoc.getAllResourcesCount());
+		
+		// test get a resource that doesn't exist
+		assertEquals(null, noDoc.getResource("NULL"));
 	}
 
 }
