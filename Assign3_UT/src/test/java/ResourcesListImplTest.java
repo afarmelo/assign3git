@@ -159,25 +159,34 @@ public class ResourcesListImplTest {
 		assertEquals(null, noDoc.getResource("NULL"));
 	}
 	
+	/** 
+	 * This method tests the method which gets XML content from
+	 * within the resource list. 
+	 * 
+	 * The comments have hidden lines that print the XML document
+	 * to the console which can be checked by a user. Any more explicit
+	 * tests would be testing the Document class, rather than the
+	 * ResourcesListImpl class.
+	 */
 	@Test
 	public void testXML() {
     	prjResources = CurrentProject.getResourcesList();
     	doc = prjResources.getXMLContent();
-    	System.out.println(doc.toXML());
+    	//System.out.println(doc.toXML());
     	
     	prjResources.addResource("Java", false, true);
     	prjResources.addResource("Jacoco");
     	
-    	System.out.println("\nData added.\n");
+    	//System.out.println("\nData added.\n");
     	doc = prjResources.getXMLContent();
-    	System.out.println(doc.toXML());
+    	//System.out.println(doc.toXML());
     	
     	prjResources.removeResource("Java");
     	prjResources.removeResource("Jacoco");
     	
-    	System.out.println("\nData removed.\n");
+    	//System.out.println("\nData removed.\n");
     	doc = prjResources.getXMLContent();
-    	System.out.println(doc.toXML());
+    	//System.out.println(doc.toXML());
 	}
 
 }
